@@ -1,0 +1,39 @@
+# Adaptation of my bash prompt (+ some git stuff added)
+
+function prompt_fgindraud_precmd {
+	(( $+functions[git-info] )) && git-info
+}
+
+function prompt_fgindraud_setup {
+	setopt LOCAL_OPTIONS
+	unsetopt XTRACE KSH_ARRAYS
+	prompt_opts=(cr percent subst)
+
+	# Shared
+	local sep="%F{green}#%f"
+	local block_s="%F{green}[%f"
+	local block_e="%F{green}]%f"
+	
+	# Setup precmp
+	autoload -Uz add-zsh-hook
+	add-zsh-hook precmd prompt_fgindraud_precmd
+
+	# Git stuff
+	zstyle ':prezto:module:git:info' verbose 'yes'
+	zstyle ':prezto:module:git:info:branch' format '%F{blue}%b%f'
+	zstyle ':prezto:module:git:info:clean' format ' %F{green}✔%f'
+	zstyle ':prezto:module:git:info:dirty' format ' %F{red}✗%f'
+	zstyle ':prezto:module:git:info:keys' format \
+		'rprompt' ${block_s}'$(coalesce "%b" "%p" "%c")%C%D%s'${block_e}
+
+	# Prompts
+	local screen=""
+	[[ "$TERM" == "screen" ]] && screen="${sep}screen"
+	PROMPT="${block_s}%n${sep}%m${screen}${sep}%T${block_e}%(?.%F{green}.%F{red})»%F{blue}%~%F{green}:%f "
+	PROMPT2="%F{yellow}»%f "
+	RPROMPT='${(e)git_info[rprompt]}'
+}
+
+prompt_fgindraud_setup "$@"
+
+# vim:set ft=zsh:
