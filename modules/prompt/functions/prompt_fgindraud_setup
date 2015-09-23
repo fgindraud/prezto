@@ -1,7 +1,50 @@
 # Adaptation of my bash prompt (+ some git stuff added)
 
+function prompt_fgindraud_git_info {
+  if (( _prompt_fgindraud_precmd_async_pid > 0 )); then
+    # Append Git status.
+    if [[ -s "$_prompt_fgindraud_precmd_async_data" ]]; then
+      alias typeset='typeset -g'
+      source "$_prompt_fgindraud_precmd_async_data"
+      RPROMPT='${git_info:+${(e)git_info[status]}}'
+      unalias typeset
+    fi
+
+    # Reset PID.
+    _prompt_fgindraud_precmd_async_pid=0
+
+    # Redisplay prompt.
+    zle && zle reset-prompt
+  fi
+}
+
+function prompt_fgindraud_precmd_async {
+  # Get Git repository information.
+  if (( $+functions[git-info] )); then
+    git-info
+    typeset -p git_info >! "$_prompt_fgindraud_precmd_async_data"
+  fi
+
+  # Signal completion to parent process.
+  kill -WINCH $$
+}
+
 function prompt_fgindraud_precmd {
-	(( $+functions[git-info] )) && git-info
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+
+  # Reset RPROMPT
+  RPROMPT=''
+
+  # Kill the old process of slow commands if it is still running.
+  if (( _prompt_fgindraud_precmd_async_pid > 0 )); then
+    kill -KILL "$_prompt_fgindraud_precmd_async_pid" &>/dev/null
+  fi
+
+  # Compute slow commands in the background.
+  trap prompt_fgindraud_git_info WINCH
+  prompt_fgindraud_precmd_async &!
+  _prompt_fgindraud_precmd_async_pid=$!
 }
 
 function prompt_fgindraud_setup {
@@ -9,29 +52,49 @@ function prompt_fgindraud_setup {
 	unsetopt XTRACE KSH_ARRAYS
 	prompt_opts=(cr percent subst)
 
+	_prompt_fgindraud_precmd_async_pid=0
+	_prompt_fgindraud_precmd_async_data="${TMPPREFIX}-prompt_fgindraud_data"
+
 	# Shared
 	local sep="%F{green}#%f"
 	local block_s="%F{green}[%f"
 	local block_e="%F{green}]%f"
-	
+
 	# Setup precmp
 	autoload -Uz add-zsh-hook
 	add-zsh-hook precmd prompt_fgindraud_precmd
 
 	# Git stuff
 	zstyle ':prezto:module:git:info' verbose 'yes'
+	
 	zstyle ':prezto:module:git:info:branch' format '%F{blue}%b%f'
-	zstyle ':prezto:module:git:info:clean' format ' %F{green}✔%f'
-	zstyle ':prezto:module:git:info:dirty' format ' %F{red}✗%f'
+	zstyle ':prezto:module:git:info:commit' format '%F{blue}%c%f'
+	zstyle ':prezto:module:git:info:position' format '%F{blue}%p%f'
+	
+	zstyle ':prezto:module:git:info:action' format $sep'%F{red}%s%f'
+	
+	zstyle ':prezto:module:git:info:clean' format '%F{green}✔%f'
+	zstyle ':prezto:module:git:info:ahead' format '%F{cyan}∆%f'
+	zstyle ':prezto:module:git:info:behind' format '%F{red}∇%f'
+	
+	zstyle ':prezto:module:git:info:added' format '%F{cyan}✚%f'
+	zstyle ':prezto:module:git:info:deleted' format '%F{red}✖%f'
+	zstyle ':prezto:module:git:info:modified' format '%F{magenta}♦%f'
+	zstyle ':prezto:module:git:info:renamed' format '%F{magenta}➔%f'
+	
+#	zstyle ':prezto:module:git:info:stashed' format ' %%B%F{6}✭%f%%b'
+	zstyle ':prezto:module:git:info:untracked' format '%F{yellow}❓%f'
+	zstyle ':prezto:module:git:info:unmerged' format '%F{red}⚺%f'
+	
 	zstyle ':prezto:module:git:info:keys' format \
-		'rprompt' ${block_s}'$(coalesce "%b" "%p" "%c")%C%D%s'${block_e}
+		'status' ${block_s}'$(coalesce "%b" "%p" "%c")%s %C%A%B%a%d%m%r%u%U'${block_e}
 
 	# Prompts
 	local screen=""
 	[[ "$TERM" == "screen" ]] && screen="${sep}screen"
 	PROMPT="${block_s}%n${sep}%m${screen}${sep}%T${block_e}%(?.%F{green}.%F{red})»%F{blue}%~%F{green}:%f "
 	PROMPT2="%F{yellow}»%f "
-	RPROMPT='${(e)git_info[rprompt]}'
+	RPROMPT="" # Is rewritten everytime by the precmd
 }
 
 prompt_fgindraud_setup "$@"

@@ -32,7 +32,6 @@ zstyle ':prezto:load' pmodule \
 	'spectrum' \
 	'utility' \
 	'completion' \
-	'pacman' \
 	'git' \
 	'syntax-highlighting' \
 	'history-substring-search' \
