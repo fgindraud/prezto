@@ -13,10 +13,12 @@ fi
 # Editor
 export EDITOR=vim
 export SUDO_EDITOR=rvim
+export DIFFPROG=meld
 
 # Custom
 alias o='kde-open'
 alias backlight='xrandr --output LVDS1 --set BACKLIGHT'
+#alias vim='vim 2>/dev/null' # temporary fix to the libclang / clang_autocomplete ncurse bug
 alias vimo='vim -O'
 
 # Local path
