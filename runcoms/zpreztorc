@@ -1,4 +1,4 @@
-# vim:set ft=zsh:
+#
 # Sets Prezto options.
 #
 # Authors:
@@ -36,6 +36,13 @@ zstyle ':prezto:load' pmodule \
 	'syntax-highlighting' \
 	'history-substring-search' \
 	'prompt'
+
+#
+# Autosuggestions
+#
+
+# Set the query found color.
+# zstyle ':prezto:module:autosuggestions:color' found ''
 
 #
 # Editor
@@ -124,6 +131,7 @@ zstyle ':prezto:module:syntax-highlighting' highlighters \
 	'main' \
 	'brackets' \
 	'pattern' \
+	'line' \
 	'cursor' \
 	'root'
 
