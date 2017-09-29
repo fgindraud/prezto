@@ -35,3 +35,8 @@ function ureboot {
 	exit
 }
 
+function music {
+	cd ~/user/music/youtube
+	vlc . &
+	disown %vlc
+}
