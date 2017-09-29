@@ -82,8 +82,8 @@ function prompt_fgindraud_setup {
 	zstyle ':prezto:module:git:info:modified' format '%F{magenta}♦%f'
 	zstyle ':prezto:module:git:info:renamed' format '%F{magenta}➔%f'
 	
-#	zstyle ':prezto:module:git:info:stashed' format ' %%B%F{6}✭%f%%b'
-	zstyle ':prezto:module:git:info:untracked' format '%F{yellow}❓%f'
+	zstyle ':prezto:module:git:info:stashed' format ' %%B%F{6}✭%f%%b'
+	zstyle ':prezto:module:git:info:untracked' format '%F{yellow}?%f'
 	zstyle ':prezto:module:git:info:unmerged' format '%F{red}⚺%f'
 	
 	zstyle ':prezto:module:git:info:keys' format \
