@@ -17,21 +17,31 @@ export DIFFPROG=meld
 
 # Custom
 alias o='kde-open'
-alias backlight='xrandr --output LVDS1 --set BACKLIGHT'
-#alias vim='vim 2>/dev/null' # temporary fix to the libclang / clang_autocomplete ncurse bug
+#alias backlight='xrandr --output LVDS1 --set BACKLIGHT'
 alias vimo='vim -O'
 
 # Local path
 path+=~/.local/bin
 path=($^path(N))
 
-# Reboot / Halt
-function uhalt {
-	poweroff
-	exit
+# Work config
+function output_flame_graph () {
+	# Generate a svg, open if if no path specified
+	default_output="/tmp/flamegraph.svg"
+	output="${1:-${default_output}}"
+	perf script | stackcollapse-perf.pl | flamegraph.pl >! "$output"
+	if [[ "$output" == "$default_output" ]]; then
+		chromium "$output"
+	fi
 }
-function ureboot {
-	reboot
-	exit
+function output_gprof2dot () {
+	# Generate png, just show it if no path specified
+	if [[ -z "$1" ]]; then
+		perf script | c++filt | gprof2dot.py -f perf | dot -Tpng | feh -
+	else
+		perf script | c++filt | gprof2dot.py -f perf | dot -Tpng >! $1
+	fi
 }
-
+function bpp_format () {
+	bpp_format.py a "Francois Gindraud (2017)" "$@"
+}
