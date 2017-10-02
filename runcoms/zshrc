@@ -17,12 +17,29 @@ export DIFFPROG=meld
 
 # Custom
 alias o='kde-open'
-#alias backlight='xrandr --output LVDS1 --set BACKLIGHT'
+alias backlight='xrandr --output LVDS1 --set BACKLIGHT'
 alias vimo='vim -O'
 
 # Local path
 path+=~/.local/bin
 path=($^path(N))
+
+# Reboot / Halt
+function uhalt {
+	poweroff
+	exit
+}
+function ureboot {
+	reboot
+	exit
+}
+
+# Home
+function music {
+	cd ~/user/music/current
+	vlc . &
+	disown %vlc
+}
 
 # Work config
 function output_flame_graph () {
