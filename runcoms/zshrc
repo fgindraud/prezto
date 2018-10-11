@@ -5,6 +5,10 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
+# Local path
+path+=~/.local/bin
+path=($^path(N))
+
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
@@ -17,10 +21,6 @@ export DIFFPROG=meld
 
 # Custom
 alias backlight='xrandr --output LVDS1 --set BACKLIGHT'
-
-# Local path
-path+=~/.local/bin
-path=($^path(N))
 
 # Reboot / Halt
 function uhalt {
@@ -58,7 +58,4 @@ function output_gprof2dot () {
 	else
 		perf script | c++filt | gprof2dot.py -f perf | dot -Tpng >! $1
 	fi
-}
-function bpp_format () {
-	bpp_format.py a "Francois Gindraud (2017)" "$@"
 }
