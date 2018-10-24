@@ -16,6 +16,7 @@ fi
 
 # Editor
 export EDITOR=vim
+export VISUAL=vim
 export SUDO_EDITOR=rvim
 export DIFFPROG=meld
 
