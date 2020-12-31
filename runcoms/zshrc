@@ -31,22 +31,12 @@ function rsync_cp {
 	rsync --archive -hh --partial --modify-window=1 "$@"
 }
 
-# Reboot / Halt
-function uhalt {
-	poweroff
-	exit
-}
-function ureboot {
-	reboot
-	exit
-}
-
 # Home
 function o {
 	xdg-open "$@" &|
 }
 function music {
-	cd ~/user/music/
+	cd ~/music/
 	vlc . &|
 }
 
