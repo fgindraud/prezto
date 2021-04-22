@@ -37,7 +37,7 @@ function o {
 }
 function music {
 	cd ~/music/
-	vlc . &|
+	vlc --random . &|
 }
 
 # Work config
