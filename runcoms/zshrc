@@ -23,9 +23,6 @@ export DIFFPROG=meld
 # Custom
 alias backlight='xrandr --output LVDS1 --set BACKLIGHT'
 
-# R
-export R_LIBS_USER="~/.r/libs"
-
 # Sane Rsync defaults
 function rsync_cp {
 	rsync --archive -hh --partial --modify-window=1 "$@"
@@ -38,6 +35,9 @@ function o {
 function music {
 	cd ~/music/
 	vlc --random . &|
+}
+function yt-dlp-with-uploader {
+	yt-dlp -o "%(uploader)s - %(title)s.%(ext)s" "$@"
 }
 
 # Work config
